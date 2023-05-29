@@ -7,6 +7,8 @@
   let tableVisible = false;
   let selectedCandidate = null;
   let editedCandidate = null;
+  let successMessage = "";
+  let showSuccessMessage = false;
 
   const dispatch = createEventDispatcher();
 
@@ -38,6 +40,9 @@
 
     // Send the updated candidate data to the API
     await updateCandidate(selectedCandidate);
+
+    successMessage = "Your details have been successfully added.";
+    showSuccessMessage = true;
 
     closePopup();
   }
@@ -87,7 +92,7 @@
   .popup-content h1 {
     color: blue;
     font-size: 24px;
-    margin-bottom: 20px;
+    margin-bottom: 25px;
   }
 
   .popup-content p {
@@ -96,12 +101,47 @@
 
   .popup-content input {
     width: 100%;
-    padding: 5px;
-    margin-bottom: 10px;
+    padding: 7px;
+    margin-bottom: 15px;
   }
 
   .popup-content button {
-    margin-top: 10px;
+    margin-top: 20px;
+  }
+
+  .success-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .success-popup-content {
+    background-color: #ffffff;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+  }
+
+  .success-popup-content p {
+    margin-bottom: 10px;
+  }
+
+  .success-popup-content button {
+    margin-top: 20px;
+  }
+  .success-popup-content h1 {
+    color: green;
+    font-size: 24px;
+    margin-bottom: 25px;
   }
 </style>
 
@@ -146,6 +186,16 @@
       <button class="btn btn-primary" on:click={saveCandidate}>Save</button>
       <button class="btn btn-secondary" on:click={closePopup}>Close</button>
     </div>
+  </div>
+</div>
+{/if}
+
+{#if showSuccessMessage}
+<div class="success-popup">
+  <div class="success-popup-content">
+    <h1>Success!</h1>
+    <p>Your details have been successfully updated.</p>
+    <button class="btn btn-primary" on:click={() => showSuccessMessage = false}>Close</button>
   </div>
 </div>
 {/if}
