@@ -39,7 +39,7 @@
     jsonData[index] = { ...selectedCandidate };
 
     // Send the updated candidate data to the API
-    await updateCandidate(selectedCandidate);
+    
 
     successMessage = "Your details have been successfully added.";
     showSuccessMessage = true;
@@ -47,19 +47,7 @@
     closePopup();
   }
 
-  async function updateCandidate(candidate) {
-    const url = `https://api.recruitly.io/api/candidate/${candidate.id}/?apiKey=TEST45684CB2A93F41FC40869DC739BD4D126D77`;
-
-    // Send a PUT or PATCH request to the API with the updated candidate data
-    await fetch(url, {
-      method: "PUT", // or "PATCH" depending on the API's requirements
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(candidate),
-    });
-  }
-
+  
   function closePopup() {
     selectedCandidate = null;
     editedCandidate = null;
