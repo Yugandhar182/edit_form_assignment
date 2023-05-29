@@ -2,13 +2,11 @@
   import { onMount } from "svelte";
   import { createEventDispatcher } from "svelte";
   import 'bootstrap/dist/css/bootstrap.min.css';
-  import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
   let jsonData = [];
   let tableVisible = false;
   let selectedCandidate = null;
   let editedCandidate = null;
-  let isEditing = false;
 
   const dispatch = createEventDispatcher();
 
@@ -26,12 +24,7 @@
   function handleTitleClick(candidate) {
     selectedCandidate = candidate;
     editedCandidate = { ...selectedCandidate };
-    isEditing = false;
     dispatch("showPopup");
-  }
-
-  function handleEdit() {
-    isEditing = true;
   }
 
   async function saveCandidate() {
@@ -46,7 +39,7 @@
     // Send the updated candidate data to the API
     await updateCandidate(selectedCandidate);
 
-    isEditing = false;
+    closePopup();
   }
 
   async function updateCandidate(candidate) {
@@ -65,7 +58,6 @@
   function closePopup() {
     selectedCandidate = null;
     editedCandidate = null;
-    isEditing = false;
   }
 </script>
 
@@ -86,35 +78,59 @@
     background-color: #ffffff;
     padding: 40px;
     border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+  }
+
+  .popup-content h1 {
+    color: blue;
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+
+  .popup-content p {
+    margin-bottom: 10px;
+  }
+
+  .popup-content input {
+    width: 100%;
+    padding: 5px;
+    margin-bottom: 10px;
+  }
+
+  .popup-content button {
+    margin-top: 10px;
   }
 </style>
 
 <main class="container mt-4">
   {#if tableVisible}
-    <table class="table">
-      <thead class="thead-light">
-        <tr>
-          <th>First Name</th>
-          <th>Surname</th>
-          <th>Email</th>
-          <th>Mobile</th>
-         
-        </tr>
-      </thead>
-      <tbody>
-        {#each jsonData as candidate}
+    <div class="table-container">
+      <table class="table">
+        <thead class="thead-light">
           <tr>
-            <td>
-              <a href="#" on:click|preventDefault={() => handleTitleClick(candidate)}>{candidate.firstName}</a>
-            </td>
-            <td>{candidate.surname}</td>
-            <td>{candidate.email}</td>
-            <td>{candidate.mobile}</td>
-           
+            <th>First Name</th>
+            <th>Surname</th>
+            <th>Email</th>
+            <th>Mobile</th>
           </tr>
-        {/each}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {#each jsonData as candidate}
+            <tr>
+              <td>
+                <a href="#" on:click|preventDefault={() => handleTitleClick(candidate)}>{candidate.firstName}</a>
+              </td>
+              <td>{candidate.surname}</td>
+              <td>{candidate.email}</td>
+              <td>{candidate.mobile}</td>
+            </tr>
+          {/each}
+        </tbody>
+      </table>
+    </div>
   {/if}
 </main>
 
@@ -122,22 +138,14 @@
 <div class="popup">
   <div class="popup-content">
     <h1 style="color:blue;">Candidate Details</h1>
-    {#if !isEditing}
-      <p>First Name: {selectedCandidate.firstName}</p>
-      <p>Surname: {selectedCandidate.surname}</p>
-      <p>Email: {selectedCandidate.email}</p>
-      <p>Mobile: {selectedCandidate.mobile}</p>
-      
-      <button class="btn btn-primary" on:click={handleEdit}>Edit</button>
-    {:else}
-      <p>First Name: <input type="text" bind:value={editedCandidate.firstName} /></p>
-      <p>Surname: <input type="text" bind:value={editedCandidate.surname} /></p>
-      <p>Email: <input type="text" bind:value={editedCandidate.email} /></p>
-      <p>Mobile: <input type="text" bind:value={editedCandidate.mobile} /></p>
-      
+    <p>First Name: <input type="text" bind:value={editedCandidate.firstName} placeholder="Enter first name" /></p>
+    <p>Surname: <input type="text" bind:value={editedCandidate.surname} placeholder="Enter surname" /></p>
+    <p>Email: <input type="text" bind:value={editedCandidate.email} placeholder="Enter email" /></p>
+    <p>Mobile: <input type="text" bind:value={editedCandidate.mobile} placeholder="Enter mobile" /></p>
+    <div>
       <button class="btn btn-primary" on:click={saveCandidate}>Save</button>
-    {/if}
-    <button class="btn btn-secondary" on:click={closePopup}>Close</button>
+      <button class="btn btn-secondary" on:click={closePopup}>Close</button>
+    </div>
   </div>
 </div>
 {/if}
