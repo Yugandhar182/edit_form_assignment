@@ -30,6 +30,7 @@
   }
 
   async function saveCandidate() {
+    // Update the selectedCandidate with the editedCandidate data
     Object.assign(selectedCandidate, editedCandidate);
 
     // Find the index of the selectedCandidate in the jsonData array
@@ -39,15 +40,26 @@
     jsonData[index] = { ...selectedCandidate };
 
     // Send the updated candidate data to the API
-    
+    const apiUrl = `https://api.recruitly.io/api/candidate?apiKey=TEST1236C4CF23E6921C41429A6E1D546AC9535E`;
+    const response = await fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(selectedCandidate)
+    });
 
-    successMessage = "Your details have been successfully added.";
-    showSuccessMessage = true;
+    if (response.ok) {
+      successMessage = "Your details have been successfully added.";
+      showSuccessMessage = true;
+    } else {
+      // Handle the case where the update request fails
+      console.error("Failed to update candidate data.");
+    }
 
     closePopup();
   }
 
-  
   function closePopup() {
     selectedCandidate = null;
     editedCandidate = null;
@@ -182,7 +194,7 @@
 <div class="success-popup">
   <div class="success-popup-content">
     <h1>Success!</h1>
-    <p>Your details have been successfully updated.</p>
+    <p>{successMessage}</p>
     <button class="btn btn-primary" on:click={() => showSuccessMessage = false}>Close</button>
   </div>
 </div>
